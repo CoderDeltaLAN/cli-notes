@@ -54,6 +54,19 @@ def add_note(text: str) -> Note:
     return note
 
 
+def remove_note(note_id: int) -> bool:
+    """Elimina la nota por id. Devuelve True si borró, False si no existía."""
+    notes = load_notes()
+    new = [n for n in notes if n.id != note_id]
+    if len(new) == len(notes):
+        return False
+    # Reasignamos IDs para mantener consecutivo (opcional; simple para plantilla)
+    for idx, n in enumerate(new, start=1):
+        n.id = idx
+    save_notes(new)
+    return True
+
+
 def list_notes() -> List[Note]:
     """Devuelve la lista de notas (orden natural por id)."""
     return load_notes()
@@ -73,6 +86,11 @@ def build_parser() -> argparse.ArgumentParser:
     p_list = sub.add_parser("list", help="Listar notas guardadas")
     p_list.set_defaults(func=_cmd_list)
 
+    # remove
+    p_rm = sub.add_parser("remove", help="Borrar una nota por id")
+    p_rm.add_argument("id", type=int, help="ID de la nota")
+    p_rm.set_defaults(func=_cmd_remove)
+
     return parser
 
 
@@ -84,6 +102,14 @@ def _cmd_list(_: argparse.Namespace) -> None:
     # Salida simple y clara
     for n in notes:
         print(f"[{n.id}] {n.created_at} — {n.text}")
+
+
+def _cmd_remove(args: argparse.Namespace) -> None:
+    ok = remove_note(args.id)
+    if ok:
+        print(f"🗑️ Nota #{args.id} borrada")
+    else:
+        print(f"⚠️ Nota #{args.id} no existe")
 
 
 def main() -> None:
