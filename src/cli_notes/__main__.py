@@ -99,9 +99,21 @@ def _cmd_list(_: argparse.Namespace) -> None:
     if not notes:
         print("No hay notas todavía.")
         return
-    # Salida simple y clara
+
+    # calcular anchos
+    id_w = max(len("ID"), max(len(str(n.id)) for n in notes))
+    date_w = max(len("FECHA"), max(len(n.created_at) for n in notes))
+    # el texto lo dejamos flexible
+
+    # encabezado
+    header = f"{'ID'.ljust(id_w)}  {'FECHA'.ljust(date_w)}  TEXTO"
+    sep = f"{'-'*id_w}  {'-'*date_w}  {'-'*5}"
+    print(header)
+    print(sep)
+
+    # filas
     for n in notes:
-        print(f"[{n.id}] {n.created_at} — {n.text}")
+        print(f"{str(n.id).ljust(id_w)}  {n.created_at.ljust(date_w)}  {n.text}")
 
 
 def _cmd_remove(args: argparse.Namespace) -> None:
