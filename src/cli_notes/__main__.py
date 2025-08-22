@@ -43,12 +43,20 @@ def save_notes(notes: List[Note]) -> None:
 def add_note(text: str) -> Note:
     notes = load_notes()
     next_id = (notes[-1].id + 1) if notes else 1
+    # Nota: utcnow() deprecated; para simplicidad en plantilla seguimos así.
     note = Note(
-        id=next_id, text=text, created_at=datetime.utcnow().isoformat(timespec="seconds") + "Z"
+        id=next_id,
+        text=text,
+        created_at=datetime.utcnow().isoformat(timespec="seconds") + "Z",
     )
     notes.append(note)
     save_notes(notes)
     return note
+
+
+def list_notes() -> List[Note]:
+    """Devuelve la lista de notas (orden natural por id)."""
+    return load_notes()
 
 
 # ---- CLI ----
@@ -56,17 +64,31 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="cli-notes", description="CLI de notas sencilla")
     sub = parser.add_subparsers(dest="command", required=True)
 
+    # add
     p_add = sub.add_parser("add", help="Añadir una nueva nota")
     p_add.add_argument("text", help="Contenido de la nota")
     p_add.set_defaults(func=lambda args: print(f"✅ Nota #{add_note(args.text).id} creada"))
 
+    # list
+    p_list = sub.add_parser("list", help="Listar notas guardadas")
+    p_list.set_defaults(func=_cmd_list)
+
     return parser
+
+
+def _cmd_list(_: argparse.Namespace) -> None:
+    notes = list_notes()
+    if not notes:
+        print("No hay notas todavía.")
+        return
+    # Salida simple y clara
+    for n in notes:
+        print(f"[{n.id}] {n.created_at} — {n.text}")
 
 
 def main() -> None:
     parser = build_parser()
     args = parser.parse_args()
-    # Cada subcomando define func
     args.func(args)
 
 
