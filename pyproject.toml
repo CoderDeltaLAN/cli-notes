@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "plantilla"
+name = "cli-notes"
 version = "0.1.0"
 description = "Plantilla base de proyecto Python (Poetry + tests)."
 authors = ["Yosvel <coderdeltalan.cargo784@8alias.com>"]
 readme = "README.md"
-packages = [{ include = "paquete_ejemplo", from = "src" }]
-
+packages = [{ include = "cli_notes", from = "src" }]
+	
 [tool.poetry.dependencies]
 python = "^3.12"
 
