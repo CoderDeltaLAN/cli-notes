@@ -1,0 +1,35 @@
+name: CI / build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Poetry
+        run: pipx install poetry
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Run linters & type checks
+        run: |
+          poetry run ruff check .
+          poetry run black . --check
+          poetry run mypy .
+
+      - name: Run tests
+        run: poetry run pytest -q

@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "plantilla"
+version = "0.1.0"
+description = "Plantilla base de proyecto Python (Poetry + tests)."
+authors = ["Yosvel <coderdeltalan.cargo784@8alias.com>"]
+readme = "README.md"
+packages = [{ include = "paquete_ejemplo", from = "src" }]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.0"
+ruff = "^0.5.7"
+black = "^24.8.0"
+mypy = "^1.11.1"
+pre-commit = "^3.8.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 100
+
+[tool.black]
+line-length = 100
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+
